@@ -96,4 +96,13 @@
 		</div>
 	@endforeach
 
+	<hr style="border: 1px dashed black;" />
+
+	<div><h3>Totais</h3></div>
+
+    <div>Vendas Total:  R$<?php echo moedaBr( $caixa_ab['saldo_inicial'] + $caixa_ab['saldo_em_caixa'] + $caixa_ab['cartao_credito'] + $caixa_ab['cartao_debito'] + $caixa_ab['pix'] ); ?></div>
+	
+
+	<hr style="border: 1px dashed black;" />
+
 </div>

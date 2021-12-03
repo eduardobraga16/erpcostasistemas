@@ -1,3 +1,5 @@
+<?php use App\Models\MesasModel; ?>
+
 @extends('template.template')
 @section('content')
 
@@ -62,7 +64,7 @@
 	      <td>{{$key['nome_cliente']}}</td>
         <td>{{$key['nome']}}</td>
         <td><?php echo dataHoraBr($key['created_at']); ?></td>
-        <td><?php if($key['id_mesa'] == ""){echo "Balcão/Delivery";}else{echo "Mesa ".$key['id_mesa'];} ?></td>
+        <td><?php if($key['id_mesa'] == ""){echo "Balcão/Delivery";}else{ echo MesasModel::find($key['id_mesa'])->numero;} //echo "Mesa ".$key['id_mesa'];} ?></td>
         <td><?php echo "R$ ". moedaBr($key['total']); ?></td>
         <td><span <?php echo $cor_fundo; ?>>{{$status}}</span></td>
         
@@ -90,9 +92,9 @@
             <span class="close-menu-actions"></span>
             
             <ul class="list-group-menu-actions">
-              <li class="list-group-item">
+              <!--<li class="list-group-item">
                 <a class="text-white" href="{{url('vendas')}}/{{$key['id']}}/edit" target="_blank"><button class="btn btn-success"><i class="fas fa-check"></i> Emitir NFE</button></a>
-              </li>
+              </li>-->
               <li class="list-group-item">
                 <a class="text-white" href="{{url('vendas/comprovanteproducao')}}/{{$key['id']}}" target="_blank"><button class="btn btn-secondary"><i class="fas fa-check"></i> Comprovante Produção</button></a>
               </li>
@@ -113,16 +115,18 @@
             </ul>
 
           <?php }else if($key['id_status'] == "4"){ ?>
-
+            <?php if($key['id_mesa'] == null){ ?>
             <span class="hamb-menu-actions"></span>
             <span class="close-menu-actions"></span>
             
             <ul class="list-group-menu-actions">
+            
               <li class="list-group-item">
                 <a class="text-white" href="{{url('pdv')}}"><button class="btn btn-success"><i class="fas fa-check"></i> Continuar Venda</button></a>
               </li>
+            
             </ul>
-
+            <?php } ?>
           <?php } ?>
           
         </td>
@@ -152,18 +156,8 @@
   </div>
 </div>
 
-{{ $vendas->links("pagination::bootstrap-4") }}
-<!--<nav>
-  <ul class="pagination">
+{{ $vendas->appends(request()->input())->links("pagination::bootstrap-4") }}
 
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Página <?php // if(isset($_GET['page'])){echo $_GET['page'];}else{echo "1";} echo " de ". $produtos['last_page'] ?></a>
-    </li>
-    <?php //echo paginacao($produtos, 'produtos?page='); ?>
-
-
-  </ul>
-</nav>-->
 @endsection
 
 <input type="hidden" class="total_pedidos" value="<?php echo $total; ?>">

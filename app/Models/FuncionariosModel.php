@@ -12,6 +12,6 @@ class FuncionariosModel extends Model
 
     protected $table='funcionarios';
     protected $fillable = [
-    	'nome','administrador','id_usuario','id_estabelecimento','senha','operando'
+    	'nome','usuario','administrador','id_usuario','id_estabelecimento','senha','operando','token'
     ];
 }

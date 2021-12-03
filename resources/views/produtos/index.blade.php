@@ -25,8 +25,10 @@
 	      <td><?php if($key['ativo'] == 's'){echo "Sim";}else{echo "Não";} ?></td>
         <td>{{$key['categoria']['nome']}}</td>
         <td>
+          <div class="col-12 btns-crud">
           <a class="text-white" href="{{url('produtos')}}/{{$key['id']}}/edit"><button class="btn btn-success">Editar</button></a>
-          <a class="text-white" href="{{url('produtos/excluir')}}/{{$key['id']}}"><button class="btn btn-danger btn-excluir">Excluir</button></a>
+          <button class="btn btn-danger btn-excluir"><a href="{{url('produtos/excluir')}}/{{$key['id']}}">Excluir</a></button>
+        </div>
         </td>
 	    </tr>
   	@endforeach

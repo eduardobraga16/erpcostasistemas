@@ -12,6 +12,7 @@ use App\Http\Controllers\MovimentacoesController;
 use App\Http\Controllers\RelatoriosController;
 use App\Http\Controllers\FuncionariosController;
 use App\Http\Controllers\MesasController;
+use App\Http\Controllers\GarconController;
 
 
 
@@ -27,7 +28,7 @@ use App\Http\Controllers\MesasController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    redirect('home')->send();
 });
 
 
@@ -63,16 +64,21 @@ Route::name('web')->group(function(){
 		//Mesas
 		Route::resource('mesas', MesasController::class);
 		Route::get('mesas/excluir/{id}', [MesasController::class, 'excluir']);
-		Route::get('mesas/pedidosqrcode/{id_estabelecimento}', [MesasController::class, 'pedidosqrcode']);
-		Route::get('mesas/pedidosqrcode/{id}/{id_estabelecimento}', [MesasController::class, 'mesa']);
-		Route::get('mesas/pedidosqrcode/{id_mesa}/categoria/{id}', [MesasController::class, 'categoria']);
-		Route::get('qrcode', [MesasController::class, 'qrcode']);
+		Route::get('/cardapio', [MesasController::class, 'cardapio']);
+		Route::get('/cardapiocategoria/{id}', [MesasController::class, 'cardapioprodutos']);
+		//Route::get('mesas/pedidosqrcode/{id_estabelecimento}', [MesasController::class, 'pedidosqrcode']);
+		//Route::get('mesas/pedidosqrcode/{id}/{id_estabelecimento}', [MesasController::class, 'mesa']);
+		//Route::get('mesas/pedidosqrcode/{id_mesa}/categoria/{id}', [MesasController::class, 'categoria']);
+		//Route::get('qrcode', [MesasController::class, 'qrcode']);
 
 		//PDV
 		Route::get('pdv', [VendasController::class, 'pdv']);
-		Route::get('garcon', [VendasController::class, 'garcon']);
-		Route::get('mesa/{id}', [VendasController::class, 'mesa']);
-		Route::get('mesa/{id_mesa}/categoria/{id}', [VendasController::class, 'categoria']);
+		
+
+		//Garcon
+		Route::get('garcon', [GarconController::class, 'index']);
+		Route::get('mesa/{id}', [GarconController::class, 'mesa']);
+		Route::get('mesa/{id_mesa}/categoria/{id}', [GarconController::class, 'categoria']);
 
 
 		//Vendas
@@ -90,8 +96,10 @@ Route::name('web')->group(function(){
 		
 		//Rotas login
 		Route::get('login', [LoginController::class, 'login']);
+		Route::get('loginGarcon', [LoginController::class, 'loginGarcon']);
 		Route::get('logout', [AuthController::class, 'logout']);
 		Route::post('authh', [AuthController::class, 'authh']);
+		Route::post('authhGarcon', [AuthController::class, 'authhGarcon']);
 
 	
 });

@@ -19,6 +19,7 @@ class VendasController extends Controller
     private $id_usuario;
     private $produtos;
     private $vendas;
+    private $vendas_items;
     private $caixas;
     private $formapagamento;
     private $mesas;
@@ -28,6 +29,9 @@ class VendasController extends Controller
         if(isset($_SESSION['userLogado'])){
             $this->token = $_SESSION['userLogado']['token'];
             $this->id_usuario = $_SESSION['userLogado']['id'];
+        }else if(isset($_SESSION['userFuncionarioLogado'])){
+            $this->token = $_SESSION['userFuncionarioLogado']['token'];
+            $this->id_usuario = $_SESSION['userFuncionarioLogado']['id'];
         }else{
             redirect('login')->send();
         }
@@ -48,16 +52,21 @@ class VendasController extends Controller
         $data_final = isset($_GET['data-final']) ? $_GET['data-final'] : date('Y-m-d');
         //$vendas = $this->vendas->where('id_status','<>','2')->orderBy('id','desc')->paginate(15);
         $vendas = $this->vendas
-        ->select('funcionarios.nome',
-        'vendas.id','vendas.nome_cliente','vendas.finalizado','vendas.total','vendas.forma_pagamento','vendas.dinheiro_recebido','vendas.troco','vendas.created_at','vendas.id_mesa','vendas.id_status','vendas.id_caixa')
-        ->join('funcionarios', 'vendas.id_funcionario', '=','funcionarios.id')
+        //->select('funcionarios.nome',
+        //'vendas.id','vendas.nome_cliente','vendas.finalizado','vendas.total','vendas.forma_pagamento','vendas.dinheiro_recebido','vendas.troco','vendas.created_at','vendas.id_status')
+        //->join('funcionarios', 'vendas.id_funcionario', '=','funcionarios.id')
         ->whereBetween('vendas.created_at',[$data_inicio." 00:00:00",$data_final." 23:59:59"])
-        ->orderBy('vendas.id','desc')->paginate(25);
+        ->orderBy('vendas.id','desc')->paginate(20);
+        
 
-        $caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
+        /*$caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
         if(!$caixasAberto){
            redirect('caixas')->send();
-        }
+        }*/
+
+
+    
+
         $total = $this->vendas->where('id_status','1')->get()->count();
         return view('vendas.index', compact('vendas','total'));
     }
@@ -76,7 +85,7 @@ class VendasController extends Controller
 
         $vendas_items = $this->vendas_items
         ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
-        'vendas_items.id_venda','vendas_items.id_produto',
+        'vendas_items.id_venda','vendas_items.id_produto','vendas_items.editar',
         'produtos.nome','produtos.id')
         ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
         ->where('vendas_items.id_venda',$venda['id'])->orderBy('vendas_items.id','desc')->get();
@@ -91,7 +100,9 @@ class VendasController extends Controller
     public function pdv(){
         $formaspagamento = $this->formapagamento->all();
 
-        $caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
+
+        
+        /*$caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
         if(!$caixasAberto){
            redirect('caixas')->send();
         }else{
@@ -105,14 +116,14 @@ class VendasController extends Controller
             ->where('caixas.fechado', 'n')
             ->where('abertura_caixa.fechado', 'n')
             ->firstOrFail();
-
-            $isVenda = $this->vendas->where('finalizado', 'n')->get()->count();
+        */
+            $isVenda = $this->vendas->where('baixa', 'n')->where('id_mesa', null)->get()->count();
 
             if($isVenda>0){
-                $venda = $this->vendas->where('finalizado','n')->firstOrFail();
+                $venda = $this->vendas->where('baixa','n')->where('id_mesa', null)->firstOrFail();
                 $vendas_items = $this->vendas_items
                 ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
-                'vendas_items.id_venda','vendas_items.id_produto',
+                'vendas_items.id_venda','vendas_items.id_produto','vendas_items.editar',
                 'produtos.nome','produtos.id')
                 ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
                 ->where('vendas_items.id_venda',$venda['id'])->orderBy('vendas_items.id','desc')->get();
@@ -121,11 +132,11 @@ class VendasController extends Controller
                 $abrir_venda = $this->vendas->create([
                     'finalizado' => 'n',
                     'id_usuario' => $this->id_usuario,
-                    'id_estabelecimento' => $caixaAbertoAtual['id_estabelecimento'],
+                    //'id_estabelecimento' => $caixaAbertoAtual['id_estabelecimento'],
                     'id_status' => 4,
-                    'id_caixa' => $caixaAbertoAtual['caixa_id'],
-                    'id_abertura_caixa' => $caixaAbertoAtual['id_ab_caixa'],
-                    'id_funcionario' => $caixaAbertoAtual['id_funcionario'],
+                    //'id_caixa' => $caixaAbertoAtual['caixa_id'],
+                    //'id_abertura_caixa' => $caixaAbertoAtual['id_ab_caixa'],
+                    //'id_funcionario' => $caixaAbertoAtual['id_funcionario'],
                 ]);
 
                 $venda = $this->vendas->findOrFail($abrir_venda->id);
@@ -137,7 +148,9 @@ class VendasController extends Controller
                 ->where('vendas_items.id_venda',$venda['id'])->orderBy('vendas_items.id','desc')
                 ->get();
             }
-        }
+        //}
+
+
         return view('vendas.pdv', compact('venda','vendas_items','formaspagamento'));
     }
 
@@ -147,16 +160,25 @@ class VendasController extends Controller
         $venda->update([
             'nome_cliente' => $request->get('nome_cliente'),
             'finalizado' => 's',
+            'baixa' => 's',
             'forma_pagamento' => $request->get('forma_pagamento'),
             'dinheiro_recebido' => $request->get('valor_recebido'),
             'troco' => $request->get('troco'),
             'id_status' => 2
         ]);
+        $venda_items = $this->vendas_items->whereRaw(" id_venda =  '".$id."' ")->get();
+        foreach ($venda_items as $key) {
+            $venda_item = $this->vendas_items->find($key['id']);
+            $venda_item->update([
+                'editar' => 'n'
+            ]);    
+        }
         if(!$venda['id_mesa'] == ""){
             $mesa = $this->mesas->findOrFail($venda['id_mesa']);
             $mesa->update(['ocupada' => 'n']);
         }
 
+        /*
         switch ($venda['forma_pagamento']) {
             case '1':
                 $ab_caixa = $this->abertura_caixa->findOrFail($venda['id_abertura_caixa']);
@@ -189,6 +211,7 @@ class VendasController extends Controller
             default:
             echo "nenhum";
         }
+        */
 
         redirect('vendas')->send();
     }
@@ -198,8 +221,16 @@ class VendasController extends Controller
         $venda->update([
             'nome_cliente' => $request->get('nome_cliente'),
             'finalizado' => 'n',
+            'baixa' => 's',
             'id_status' => 1
         ]);
+        $venda_items = $this->vendas_items->whereRaw(" id_venda =  '".$id_venda."' ")->get();
+        foreach ($venda_items as $key) {
+            $venda_item = $this->vendas_items->find($key['id']);
+            $venda_item->update([
+                'editar' => 'n'
+            ]);    
+        }
         return response()->json("foi");
     }
 
@@ -224,6 +255,7 @@ class VendasController extends Controller
         if($venda['id_status'] == '4' || $venda['id_status'] == '1'){
             $venda->update([
                 'finalizado' => 's',
+                'baixa' => 's',
                 'id_status' => 3
             ]);
         }
@@ -235,8 +267,18 @@ class VendasController extends Controller
         $venda->update([
             'nome_cliente' => $request->get('nome_cliente'),
             'finalizado' => 'n',
+            'baixa' => 's',
             'id_status' => 1
         ]);
+
+        $venda_items = $this->vendas_items->whereRaw(" id_venda =  '".$id_venda."' ")->get();
+        foreach ($venda_items as $key) {
+            $venda_item = $this->vendas_items->find($key['id']);
+            $venda_item->update([
+                'editar' => 'n'
+            ]);    
+        }
+        
         return response()->json("foi");
     }
 
@@ -255,25 +297,39 @@ class VendasController extends Controller
     }
 
     public function comprovante($id_venda){
-        $venda = $this->vendas->findOrFail($id_venda);
-        $items = $this->vendas_items
-        ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
-                'vendas_items.id_venda','vendas_items.id_produto',
-                'produtos.nome','produtos.id')
-                ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
-        ->where('vendas_items.id_venda',$id_venda)->get();
+        $venda = array();
+        $data_venda = $this->vendas->findOrFail($id_venda);
+
+        $venda['data'] = $data_venda->toArray();
+        $venda['data']['forma_pagamento'] = FormapagamentosModel::find($data_venda->forma_pagamento)->forma;
+
+        $items = array();
+        $data_items = $this->vendas_items->where('id_venda',$id_venda)->get();
+
+        foreach ($data_items as $item) {
+            
+            $item['nome_produto']  = ProdutosModel::find($item->id_produto)->nome;
+            $items[] = $item;
+        }
+
+        //var_dump($items);exit;
         return view('vendas.comprovante', compact('venda','items'));
     }
 
     public function comprovanteproducao($id_venda){
         $venda = $this->vendas->findOrFail($id_venda);
-        $items = $this->vendas_items
-        ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
-                'vendas_items.id_venda','vendas_items.id_produto',
-                'produtos.nome','produtos.id')
-                ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
-        ->where('vendas_items.id_venda',$id_venda)->get();
-        return view('vendas.comprovante', compact('venda','items'));
+        
+
+
+        $items = array();
+        $data_items = $this->vendas_items->where('id_venda',$id_venda)->get();
+        foreach ($data_items as $item) {
+            
+            $item['nome_produto']  = ProdutosModel::find($item->id_produto)->nome;
+            $items[] = $item;
+        }
+
+        return view('vendas.comprovanteproducao', compact('venda','items'));
     }
 
 

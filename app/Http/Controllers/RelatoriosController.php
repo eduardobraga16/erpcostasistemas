@@ -121,7 +121,12 @@ class RelatoriosController extends Controller
                 if(isset($_GET['print'])){
                     $caixa_ab = $this->abertura_caixa
                     ->select('funcionarios.nome',
-                            'abertura_caixa.id','abertura_caixa.saldo_inicial','abertura_caixa.id_usuario','abertura_caixa.id_funcionario','abertura_caixa.id_estabelecimento','abertura_caixa.created_at','abertura_caixa.updated_at','abertura_caixa.id_caixa','abertura_caixa.fechado','abertura_caixa.fechamento_avista','abertura_caixa.saldo_em_caixa','caixas.caixa')
+                            'abertura_caixa.id','abertura_caixa.saldo_inicial','abertura_caixa.id_usuario','abertura_caixa.id_funcionario',
+                            'abertura_caixa.id_estabelecimento','abertura_caixa.created_at','abertura_caixa.updated_at',
+                            'abertura_caixa.id_caixa','abertura_caixa.fechado',
+                            'abertura_caixa.cartao_credito','abertura_caixa.cartao_debito','abertura_caixa.pix',
+                            'abertura_caixa.fechamento_avista','abertura_caixa.fechamento_credito','abertura_caixa.fechamento_debito','abertura_caixa.fechamento_pix',
+                            'abertura_caixa.saldo_em_caixa','caixas.caixa')
                     ->join('funcionarios','abertura_caixa.id_funcionario', '=', 'funcionarios.id')
                     ->join('caixas','abertura_caixa.id_caixa', '=', 'caixas.id')
                     ->findOrFail($_GET['id']);

@@ -108,12 +108,13 @@ class MovimentacoesController extends Controller
         try {
 
             if($request->get('tipo') == 'e'){
+                /*
                 $ab_caixa = $this->abertura_caixa->findOrFail($request->get('id'));
                 $total_no_caixa = $ab_caixa['saldo_em_caixa']+$request->get('valor');
                 $ab_caixa->update([
                     'saldo_em_caixa' => $total_no_caixa
                 ]);
-
+                */
                 $movimentacao = $this->movimentacoes->create([
                     'tipo'                  => $request->get('tipo'),
                     'valor'                 => $request->get('valor'),
@@ -127,15 +128,16 @@ class MovimentacoesController extends Controller
                 return response()->json(['resultado'=>'Movimentação feita com sucesso!']);
                 //redirect('movimentacoes/create?tipo=e')->send();
             }else{
+                
                 $ab_caixa = $this->abertura_caixa->findOrFail($request->get('id'));
                 if($ab_caixa['saldo_em_caixa'] < $request->get('valor')){
                     return response()->json(['resultado'=>'Saldo Em caixa menor do que valor solicitado!']);
                 }else{
-                    $total_no_caixa = $ab_caixa['saldo_em_caixa']-$request->get('valor');
+                    /*$total_no_caixa = $ab_caixa['saldo_em_caixa']-$request->get('valor');
                     $ab_caixa->update([
                         'saldo_em_caixa' => $total_no_caixa
                     ]);
-
+                    */
                     $movimentacao = $this->movimentacoes->create([
                         'tipo'                  => $request->get('tipo'),
                         'valor'                 => $request->get('valor'),

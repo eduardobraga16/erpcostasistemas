@@ -1,3 +1,5 @@
+<?php use App\Models\MesasModel; ?>
+<?php use App\Models\EstabelecimentosModel; ?>
 <style type="text/css">
 	body{
 		font-family: arial;
@@ -36,8 +38,10 @@
 </script>
 
 <div class="cupon-full">
-    <div><span>Cliente: <?php echo $venda->nome_cliente; ?></span></div>
-    <div><span>Data: <?php echo dataHoraBr($venda->created_at); ?></span></div>
+	<div><center><h2><?php echo EstabelecimentosModel::whereRaw( " id_usuario = '".$_SESSION['userLogado']['id']."' " )->first()->nome; ?></h2></center></div>
+    <div><span><b>Cliente</b>: <?php if($venda['data']['nome_cliente'] == ""){echo "N/D";}else{echo $venda['data']['nome_cliente'];} ?></span></div>
+    <div><span><b>Data</b>: <?php echo dataHoraBr($venda['data']['created_at']); ?></span></div>
+    <div><span><b>Mesa</b>: <?php if($venda['data']['id_mesa'] == ""){echo "Balcão/Delivery";}else{ echo MesasModel::find($venda['data']['id_mesa'])->numero;} ?></span></div>
 
     <hr style="border: 1px dashed black;" />
 	<br />
@@ -53,10 +57,10 @@
 			</tr>
 			<?php foreach($items as $iten){ ?>
 			<tr class="tb-cup-inter">
-				<td style="text-align: left;"><span><?php echo $iten->nome; ?></span></td>
-				<td><span> <?php echo moedaBr($iten->preco); ?></span></td>
-				<td><span> <?php echo $iten->qtde; ?></span></td>
-				<td><span> <?php echo moedaBr($iten->qtde*$iten->preco); ?></span></td>
+				<td style="text-align: left;"><span><?php echo $iten['nome_produto']; ?></span></td>
+				<td><span> <?php echo moedaBr($iten['preco']); ?></span></td>
+				<td><span> <?php echo $iten['qtde']; ?></span></td>
+				<td><span> <?php echo moedaBr($iten['qtde']*$iten['preco']); ?></span></td>
 			</tr>
 			<?php } ?>
 		</tbody>
@@ -64,15 +68,15 @@
 	<br /><br />
 	<hr style="border: 1px dashed black;" />
 
-	<div><span><strong>Forma de Pagamento:</strong> <?php echo $venda->forma_pagamento; ?></span></div>
-	<div><span><strong>Dinheiro recebido:</strong> <?php echo $venda->dinheiro_recebido; ?></span></div>
-	<div><span><strong>Troco:</strong> <?php echo moedaBr($venda->troco); ?></span></div>
-	<div><span><strong>Total pago:</strong> R$ <?php echo moedaBr($venda->total); ?></span></div>
+	<div><span><strong>Forma de Pagamento:</strong> <?php echo $venda['data']['forma_pagamento']; ?></span></div>
+	<div><span><strong>Dinheiro recebido:</strong> R$ <?php echo moedaBr($venda['data']['dinheiro_recebido']); ?></span></div>
+	<div><span><strong>Troco:</strong> R$ <?php echo moedaBr($venda['data']['troco']); ?></span></div>
+	<div><span><strong>Total pago:</strong> R$ <?php echo moedaBr($venda['data']['total']); ?></span></div>
 
 	<br /><br />
 	<hr style="border: 1px dashed black;" />
 
-	<div><span>Temos Delivery</span></div>
-	<div><span>Número: 99629-3642</span></div>
+	<div><span><b>Temos Delivery</b></span></div>
+	<div><span><b>Número</b>: 99629-3642</span></div>
 
 </div>

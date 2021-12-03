@@ -29,10 +29,19 @@ $( document ).ready(function() {
     	let descricao = $("#descricao").val();
     	let preco = $("#preco").val();
     	let ativo = $("#ativo").val();
+        let id_categoria = $("#id_categoria").val();
 
         var formulario = document.getElementById('formulario-front-cad-prod');
         var formData = new FormData(formulario);
     	let _token   = $('meta[name="csrf-token"]').attr('content');
+
+        //Campos Obrigatórios
+        if(id_categoria == ""){
+            alert("Selecione uma Categoria!");
+            $(".loadinging").css({"z-index":"10"});
+            $(".loud").css({"display":"none"});
+            exit();
+        }
 
     	$.ajax({
         	type: 'post',
@@ -100,12 +109,16 @@ $( document ).ready(function() {
         let id_caixa = $(this).parent().find(".id_caixa").val();
         let valor_inicial = $(this).parent().parent().find("#valor_inicial").val();
         let id_funcionario = $(this).parent().parent().find("#funcionario_id").val();
-        let senha = $(this).parent().parent().find("#senha").val();
         let id_estabelecimento = $(this).parent().parent().find("#estabelecimento_id").val();
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
         //Campos Obrigatórios
-        if(!id_funcionario){alert("Selecione o Funcionário!");$(".loadinging").css({"z-index":"10"});$(".loud").css({"display":"none"});exit();}
+        if(!id_funcionario){
+            alert("Selecione o Funcionário!");
+            $(".loadinging").css({"z-index":"10"});
+            $(".loud").css({"display":"none"});
+            exit();
+        }
 
         $.ajax({
             type: 'POST',
@@ -115,19 +128,13 @@ $( document ).ready(function() {
                 valor_inicial: valor_inicial,
                 id_funcionario:id_funcionario,
                 //nome_funcionario:nome_funcionario,
-                senha:senha,
                 id_estabelecimento:id_estabelecimento,
                 _token:_token
             },
-            dataType: 'json',
+            //dataType: 'json',
             success: function(data){
                 //console.log(data);
-                if(data['isLogado']){
-                    redirecionaUrl(base_url+'/vendas');
-                }else{
-                    $(".loud").css("display", "none");
-                    alert("Senha errada!");
-                }
+                redirecionaUrl(base_url+'/vendas');
             }
         });
     });
@@ -160,7 +167,6 @@ $( document ).ready(function() {
         let valor_credito = $(this).parent().parent().find("#cartao_credito").val();
         let valor_debito = $(this).parent().parent().find("#cartao_debito").val();
         let valor_pix = $(this).parent().parent().find("#pix").val();
-        let senha = $(this).parent().parent().find("#senha").val();
         let _token   = $('meta[name="csrf-token"]').attr('content');
         $.ajax({
             type: 'POST',
@@ -174,18 +180,10 @@ $( document ).ready(function() {
                 valor_credito:valor_credito,
                 valor_debito:valor_debito,
                 valor_pix:valor_pix,
-                senha:senha,
                 _token:_token
             },
             success: function(data){
-                //console.log(data);
-                if(data['isLogado']){
-                    redirecionaUrl(base_url+'/vendas');
-                }else{
-                    $(".loadinging").css({"z-index":"10"});
-                    $(".loud").css({"display":"none"});
-                    alert("Senha errada!");
-                }
+                redirecionaUrl(base_url+'/vendas');
             }
         });
     });
@@ -382,7 +380,7 @@ $( document ).ready(function() {
     
     $("#valor_recebido").on('keyup',function(){
         let valor_troco = '0';
-        let total = $(".total-str").text();
+        let total = $(".total-str").text().replace(',','.');
         let valor_recebido = $(this).val();
         if(valor_recebido == ''){
             valor_troco = 0;
@@ -497,7 +495,7 @@ $( document ).ready(function() {
             dataType: 'json',
             success: function(data){
                 //console.log(data);
-                redirecionaUrl(base_url+"/mesas/pedidosqrcode/1");
+                redirecionaUrl(base_url+"/garcon");
             }
         });
     });
@@ -537,14 +535,12 @@ function finalizarVendaGarcon(_token,id_venda,nome_cliente,url_redirect){
 }
 
 function calculaTroco(total){
-    
     let valor_troco = '0';
     let valor_recebido = $("#valor_recebido").val();
     if(valor_recebido == '0'){
         exit();
     }
     valor_troco = parseFloat(valor_recebido) - parseFloat(total);    
-    
     $(".troco-str").html(valor_troco.toFixed(2));
     $("#troco").val(valor_troco);
     

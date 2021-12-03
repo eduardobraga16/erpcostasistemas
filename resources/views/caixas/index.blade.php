@@ -92,9 +92,6 @@
           </select>
           <br/>
 
-          <label for="senha" class="form-label">Senha</label>
-          <input type="password" class="form-control" id="senha" name="senha">
-
           <label for="valor_inicial" class="form-label">Valor Inicial</label>
           <input type="text" class="form-control" id="valor_inicial" value="0" name="valor_inicial">
         
@@ -126,9 +123,6 @@
           <label for="funcionario_id" class="form-label">Funcionario</label>
           <input type="text" class="form-control" id="funcionario_nome_fecha" name="funcionario_nome_fecha" disabled="false">
           <input type="hidden" class="form-control" id="funcionario_id_fecha" name="funcionario_id_fecha" disabled="false"><br/>
-
-          <label for="senha" class="form-label">Senha</label>
-          <input type="password" class="form-control" id="senha" name="senha"><br/>
 
           <label for="valor_final" class="form-label">Dinheiro em Caixa</label>
           <input type="text" class="form-control" id="valor_final" value="0" name="valor_final"><br/>

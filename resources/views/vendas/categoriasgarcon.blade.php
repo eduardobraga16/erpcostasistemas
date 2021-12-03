@@ -8,6 +8,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
      <meta name="csrf-token" content="{{ csrf_token() }}" />
      <input type="hidden" value="{{$venda['id']}}" id="id_venda">
+     <input type="hidden" value="<?php if(isset($venda['id_mesa'])){echo $venda['id_mesa'];} ?>" id="id_mesa">
       @foreach($produtos as $key)
       <div class="card-body-full btn-prod-garcon">
         <input type="hidden" value="{{$key['id']}}" id="id_produto">
@@ -56,8 +57,11 @@
 <div class="box-carrinho table-itens-garcon">
   <div class="row" style="background: #ececec;padding: 7px 2px 3px 0px;">
     <div class="col-md-12" style="display: flex">  
-      <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" placeholder="Nome do cliente" required="true" style="margin: 0px 5px 5px 5px;">
-      <button class="btn btn-danger btn-finalizar-garcon" style="margin: 0px 5px 5px 0px;">Finalizar</button>
+      <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" placeholder="Nome do cliente" value="<?php echo $venda['nome_cliente']; ?>" required="true" style="margin: 0px 5px 5px 5px;">
+      <button class="btn btn-success btn-finalizar-garcon" style="margin: 0px 5px 5px 0px;"><i class="fas fa-check"></i></button>
+      <?php if($venda['id_status'] == '4'){ ?>
+        <button class="btn btn-danger btn-cancelar-mesa" style="margin: 0px 5px 5px 0px;"><i class="fas fa-times"></i></button>
+      <?php } ?>
     </div>
     <div class="col-md-12" style="display: flex">
       <input type="checkbox" id="check_nome_cliente" name="check_nome_cliente" required style="margin: 5px 5px 0px 10px;">
@@ -73,7 +77,7 @@
       <span class="car-iten-nome">{{$it['nome']}}</span>
       <span class="car-item-val">R$ {{$it['qtde']*$it['preco']}}
         <?php if(isset($venda['id'])){
-          if($venda['id_status'] == '4'){ ?>
+          if($it['editar'] == 's'){ ?>
             <div class="btn btn-danger btn-remove-prod" data-id-venda="{{$it['id_venda']}}" data-id-item="{{$it['id_venda_items']}}" onclick="removeItemCarrinho(this)">X</div>
         <?php }} ?>
       </span>

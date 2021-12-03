@@ -31,8 +31,10 @@ class FuncionariosController extends Controller
     public function index()
     {
         $funcionarios = $this->funcionarios
-        ->select('estabelecimentos.nome AS nome_estabelecimento_join','funcionarios.id','funcionarios.nome','funcionarios.administrador','funcionarios.id_estabelecimento')
+        ->select('estabelecimentos.nome AS nome_estabelecimento_join','funcionarios.id','funcionarios.id_usuario','funcionarios.nome','funcionarios.administrador','funcionarios.id_estabelecimento')
+        
         ->join('estabelecimentos','funcionarios.id_estabelecimento','=','estabelecimentos.id')
+        ->where('funcionarios.id_usuario', $this->id_usuario)
         ->paginate(20);
         return view('funcionarios.index', compact('funcionarios'));
     }
@@ -45,7 +47,9 @@ class FuncionariosController extends Controller
     public function create()
     {
         try {
-            $estabelecimentos = $this->estabelecimentos->all();
+            $estabelecimentos = $this->estabelecimentos
+            ->where('id_usuario', $this->id_usuario)
+            ->get();
         } catch (Exception $e) {
             
         }
@@ -94,7 +98,9 @@ class FuncionariosController extends Controller
     {
         try {
             $funcionario = $this->funcionarios->findOrFail($id);
-            $estabelecimentos = $this->estabelecimentos->all();
+            $estabelecimentos = $this->estabelecimentos
+            ->where('id_usuario', $this->id_usuario)
+            ->get();
         } catch (Exception $e) {
             
         }

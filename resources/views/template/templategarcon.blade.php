@@ -36,7 +36,7 @@ if(isset($_SERVER['PATH_INFO'])){
     $url_atual = $_SERVER['PATH_INFO'];
     $slugs = explode("/", $url_atual);
 }
-if($slugs[1] == 'garcon'){}else{ ?>
+if($slugs[1] == 'garcon' || $slugs[1] == 'cardapio'){}else{ ?>
 	
 <div class="col-12">
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">

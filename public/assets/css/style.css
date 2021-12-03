@@ -2,6 +2,14 @@ body{
 	outline: none;
 }
 
+.page-item.active .page-link{
+    background-color: #00446b;
+    border-color: #00446b;
+}
+.page-link{
+    color: #3e3e3e;
+}
+
 
 .box-finalizar-pdv{
         background: #055280;
@@ -346,17 +354,25 @@ tbody, td, tfoot, th, thead, tr{
     display: block;
 }
 
+.list-group-menu-actions{
+    width: 260px;
+}
+.list-group-menu-actions .list-group-item{
+    background-color: #ff9800;
+}
+
 
 .body-full{
-	background: rgb(221,134,6);
-    background: linear-gradient(90deg, rgba(221,134,6,1) 0%, rgba(249,164,40,1) 49%, rgba(255,189,94,1) 100%);
+	background: #f5f5f5;
+    /*background: rgb(221,134,6);
+    background: linear-gradient(90deg, rgba(221,134,6,1) 0%, rgba(249,164,40,1) 49%, rgba(255,189,94,1) 100%);*/
     border-radius: 10px;
     box-shadow: 0px 0px 20px #d5d5d5;
     margin: 50px 0px;
     padding: 15px;
 }
 .body-full h1{
-	color: #fff;
+	/*color: #fff;*/
 }
 
 .btns-crud i, .btns-crud a{

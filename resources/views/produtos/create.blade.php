@@ -40,7 +40,7 @@
       
       <li class="nav-item">
         <select name="id_categoria" id="id_categoria" required="true" class="form-select">
-          <option selected>Selecione uma categoria</option>
+          <option selected value="">Selecione uma categoria</option>
           @foreach($categorias as $cat)
           <option value="{{$cat['id']}}">{{$cat['nome']}}</option>
           @endforeach

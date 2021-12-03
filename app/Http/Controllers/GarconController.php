@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\MesasModel;
 use App\Models\VendasModel;
 use App\Models\CaixasModel;
 use App\Models\VendasitemsModel;
 use App\Models\FormapagamentosModel;
 use App\Models\CategoriasModel;
 use App\Models\ProdutosModel;
+use App\Models\MesasModel;
 use App\Models\AberturacaixaModel;
 
-class MesasController extends Controller
+class GarconController extends Controller
 {
+    
     private $token;
     private $id_usuario;
     private $produtos;
@@ -24,11 +25,11 @@ class MesasController extends Controller
     private $abertura_caixa;
 
     public function __construct(VendasModel $vendas, CaixasModel $caixas, VendasitemsModel $vendas_items, FormapagamentosModel $formapagamento, CategoriasModel $categorias, ProdutosModel $produtos, MesasModel $mesas,AberturacaixaModel $abertura_caixa){
-        if(isset($_SESSION['userLogado'])){
-            $this->token = $_SESSION['userLogado']['token'];
-            $this->id_usuario = $_SESSION['userLogado']['id'];
+        if(isset($_SESSION['userFuncionarioLogado'])){
+            $this->token = $_SESSION['userFuncionarioLogado']['token'];
+            $this->id_usuario = $_SESSION['userFuncionarioLogado']['id_usuario'];
         }else{
-            redirect('login')->send();
+            redirect('loginGarcon')->send();
         }
 
         $this->vendas           = $vendas;
@@ -41,135 +42,17 @@ class MesasController extends Controller
         $this->abertura_caixa   = $abertura_caixa;
     }
 
-
-    public function index()
+    public function index(Request $request)
     {
-        $mesas = $this->mesas
-        ->where('id_usuario', $this->id_usuario)
-        ->paginate(20);
-
-        return view('mesas.index', compact('mesas'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        
-
-        return view('mesas.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->all();
-        $data['id_usuario'] = $this->id_usuario;
-        $data['ocupada'] = 'n';
-        
-        try {
-            $mesa = $this->mesas->create($data);
-            redirect('mesas')->send();
-        } catch (Exception $e) {
-            
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        try {
-            $mesa = $this->mesas->findOrFail($id);
-        } catch (Exception $e) {
-            
-        }
-
-        return view('mesas.editar', compact('mesa'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-        try {
-            $mesa = $this->mesas->findOrFail($id);
-            $mesa->update($data);
-            redirect('mesas')->send();
-        } catch (Exception $e) {
-            
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function excluir($id){
-        try {
-            $mesa = $this->mesas->findOrFail($id);
-            $mesa->delete();
-            redirect('mesas')->send();
-        } catch (Exception $e) {
-            
-        }
-    }
-
-    public function cardapio(){
-        $categorias = $this->categorias->all();
-        return view('mesas.cardapio', compact('categorias'));
-    }
-
-    public function cardapioprodutos($id){
-        $produtos = $this->produtos->where('id_categoria', $id)->get();
-        return view('mesas.cardapioprodutos', compact('produtos'));
-    }
-
-
-    public function pedidosqrcode($id_estabelecimento){
         $mesas = $this->mesas->where('id_usuario', $this->id_usuario)->orderBy('numero','asc')->get();
-        return view('mesas.pedidosqrcode', compact('mesas','id_estabelecimento'));
+        return view('vendas.garcon', compact('mesas'));
     }
 
-    public function mesa($id,$id_estabelecimento){
-        $caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
-        if(!$caixasAberto){
+
+
+    public function mesa($id){
+        //$caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
+        /*if(!$caixasAberto){
             $titulo = "Nenhum caixa Aberto!";
             return view('vendas.mesa', compact('titulo'));
         }else{
@@ -183,6 +66,7 @@ class MesasController extends Controller
             ->where('caixas.fechado', 'n')
             ->where('abertura_caixa.fechado', 'n')
             ->firstOrFail();
+            */
 
             $isVenda = $this->vendas
             ->where('finalizado', 'n')
@@ -196,7 +80,7 @@ class MesasController extends Controller
 
                 $vendas_items = $this->vendas_items
                 ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
-                'vendas_items.id_venda','vendas_items.id_produto','vendas_items.observacoes',
+                'vendas_items.id_venda','vendas_items.id_produto','vendas_items.observacoes','vendas_items.editar',
                 'produtos.nome','produtos.id')
                 ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
                 ->where('vendas_items.id_venda',$venda['id'])->orderBy('vendas_items.id','desc')->get();
@@ -205,12 +89,12 @@ class MesasController extends Controller
                 $abrir_venda = $this->vendas->create([
                     'finalizado' => 'n',
                     'id_usuario' => $this->id_usuario,
-                    'id_estabelecimento' => $caixaAbertoAtual['id_estabelecimento'],
+                    //'id_estabelecimento' => $caixaAbertoAtual['id_estabelecimento'],
                     'id_mesa' => $id,
                     'id_status' => 4,
-                    'id_caixa' => $caixaAbertoAtual['caixa_id'],
-                    'id_funcionario' => $caixaAbertoAtual['id_funcionario'],
-                    'id_abertura_caixa' => $caixaAbertoAtual['id_ab_caixa']
+                    //'id_caixa' => $caixaAbertoAtual['caixa_id'],
+                    //'id_funcionario' => $caixaAbertoAtual['id_funcionario'],
+                    //'id_abertura_caixa' => $caixaAbertoAtual['id_ab_caixa']
 
                 ]);
 
@@ -229,15 +113,15 @@ class MesasController extends Controller
             $mesa->update([
                 'ocupada' => 's'
             ]);
-            return view('mesas.mesasqrcode', compact('categorias', 'mesa', 'venda', 'vendas_items'));
-        }
+            return view('vendas.mesa', compact('categorias', 'mesa', 'venda', 'vendas_items'));
+        //}
 
         
     }
 
     public function categoria($id_mesa,$id){
 
-        $caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
+        /*$caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
         if(!$caixasAberto){
             redirect('garcon')->send();
         }else{
@@ -251,6 +135,7 @@ class MesasController extends Controller
             ->where('caixas.fechado', 'n')
             ->where('abertura_caixa.fechado', 'n')
             ->firstOrFail();
+            */
 
             $isVenda = $this->vendas
             ->where('finalizado', 'n')
@@ -263,7 +148,7 @@ class MesasController extends Controller
                 ->where('id_mesa',$id_mesa)->firstOrFail();
 
                 $vendas_items = $this->vendas_items
-                ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco',
+                ->select('vendas_items.id AS id_venda_items','vendas_items.qtde','vendas_items.preco','vendas_items.editar',
                 'vendas_items.id_venda','vendas_items.id_produto','vendas_items.observacoes',
                 'produtos.nome','produtos.id')
                 ->join('produtos', 'vendas_items.id_produto', '=', 'produtos.id')
@@ -275,11 +160,16 @@ class MesasController extends Controller
             $categorias = $this->categorias->all();
             $mesa = $this->mesas->findOrFail($id);
             $produtos = $this->produtos->where('id_categoria', $id)->get();
-            return view('mesas.categoriasqrcode', compact('produtos', 'mesa', 'venda', 'vendas_items'));
+            return view('vendas.categoriasgarcon', compact('produtos', 'mesa', 'venda', 'vendas_items'));
         }
+    //}
+
+
+
+    public function atualizaroff($id){
+        $total = $this->vendas->where('id_status','1')->get()->count();
+        return response()->json(['resultado'=>$total]);
     }
 
-    public function qrcode(){
-        return view('mesas.qrcode');
-    }
+
 }

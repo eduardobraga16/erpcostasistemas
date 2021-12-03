@@ -11,7 +11,7 @@ class VendasModel extends Model
 
     protected $table='vendas';
     protected $fillable = [
-    	'nome_cliente','finalizado','total','forma_pagamento','dinheiro_recebido','troco','id_usuario','id_estabelecimento','id_mesa','id_status','id_caixa','id_abertura_caixa','id_funcionario'
+    	'nome_cliente','finalizado','baixa','total','forma_pagamento','dinheiro_recebido','troco','id_usuario','id_estabelecimento','id_mesa','id_status','id_caixa','id_abertura_caixa','id_funcionario'
     ];
 
     //public function categoria(){

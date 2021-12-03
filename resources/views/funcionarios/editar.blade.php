@@ -17,7 +17,7 @@
 
     <label for="administrador" class="form-label">Administrador</label>
     <select id="administrador" name="administrador" class="form-select">
-      <option value="s" <?php if($funcionario['administrador'] == 's'){echo "selected";} ?> >Sim</option>
+      <!--<option value="s" <?php if($funcionario['administrador'] == 's'){echo "selected";} ?> >Sim</option>-->
       <option value="n" <?php if($funcionario['administrador'] == 'n'){echo "selected";} ?> >Não</option>
     </select>
   </div>

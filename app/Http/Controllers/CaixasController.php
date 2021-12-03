@@ -97,72 +97,54 @@ class CaixasController extends Controller
     }
 
     public function abertura(Request $request,$id){
-        //var_dump($request->all());exit;
-        $isLogado = false;
+        
         $caixasAberto = $this->caixas->where('fechado', 'n')->get()->count();
 
-        $logando_funcionario = $this->funcionarios->where('id',$request->get('id_funcionario'))->where('senha',$request->get('senha'))->get()->count();
-
-        if($logando_funcionario){
-            $caixa = $this->caixas->findOrFail($id);
-            $caixa->update([
-                'fechado'=> 'n',
-            ]);
+        $caixa = $this->caixas->findOrFail($id);
+        $caixa->update([
+            'fechado'=> 'n',
+        ]);
 
 
 
-            $ab_caixa = $this->abertura_caixa->create([
-                'saldo_inicial'         => $request->get('valor_inicial'),
-                'id_usuario'            => $this->id_usuario,
-                'id_funcionario'        => $request->get('id_funcionario'),
-                'id_estabelecimento'    => $request->get('id_estabelecimento'),
-                'id_caixa'              => $id,
-                'fechado'               => 'n'
-            ]);
+        $ab_caixa = $this->abertura_caixa->create([
+            'saldo_inicial'         => $request->get('valor_inicial'),
+            'id_usuario'            => $this->id_usuario,
+            'id_funcionario'        => $request->get('id_funcionario'),
+            'id_estabelecimento'    => $request->get('id_estabelecimento'),
+            'id_caixa'              => $id,
+            'fechado'               => 'n'
+        ]);
 
-            $funcionario_find = $this->funcionarios->findOrFail($request->get('id_funcionario'));
-            $funcionario_find->update([
-                'operando'       =>'s'
-            ]);
-            $isLogado = true;
-            return response()->json(['isLogado'=>$isLogado]);
-        }else{
-            $isLogado = false;
-            return response()->json(['isLogado'=>$isLogado]);
-        }        
-
+        $funcionario_find = $this->funcionarios->findOrFail($request->get('id_funcionario'));
+        $funcionario_find->update([
+            'operando'       =>'s'
+        ]);
+        //return response()->json("abriu");
     }
 
     public function fechamento(Request $request,$id){
-        //var_dump($request->all());exit;
-        $isLogado = false;
-        $logando_funcionario = $this->funcionarios->where('id',$request->get('id_funcionario'))->where('senha',$request->get('senha'))->get()->count();
-        if($logando_funcionario){
-            //Deixa o Caixa Livre
-            $caixa = $this->caixas->findOrFail($id);
-            $caixa->update(['fechado'=> 's']);
+        //Deixa o Caixa Livre
+        $caixa = $this->caixas->findOrFail($id);
+        $caixa->update(['fechado'=> 's']);
 
-            //Fecha o Caixa na tabela Abertura_caixa
-            //$ab_caixa_id_find = $this->abertura_caixa->where('id_caixa',$id)->where('fechado', 'n')->firstOrFail();
-            $ab_caixa = $this->abertura_caixa->findOrFail($request->get('id_ab_caixa'));
-            $ab_caixa->update([
-                'fechamento_avista'   => $request->get('valor_avista'),
-                'fechamento_credito'   => $request->get('valor_credito'),
-                'fechamento_debito'   => $request->get('valor_debito'),
-                'fechamento_pix'   => $request->get('valor_pix'),
-                'fechado'       =>'s'
-            ]);
+        //Fecha o Caixa na tabela Abertura_caixa
+        //$ab_caixa_id_find = $this->abertura_caixa->where('id_caixa',$id)->where('fechado', 'n')->firstOrFail();
+        $ab_caixa = $this->abertura_caixa->findOrFail($request->get('id_ab_caixa'));
+        $ab_caixa->update([
+            'fechamento_avista'   => $request->get('valor_avista'),
+            'fechamento_credito'   => $request->get('valor_credito'),
+            'fechamento_debito'   => $request->get('valor_debito'),
+            'fechamento_pix'   => $request->get('valor_pix'),
+            'fechado'       =>'s'
+        ]);
 
-            $funcionario_find = $this->funcionarios->findOrFail($request->get('id_funcionario'));
-            $funcionario_find->update([
-                'operando'       =>'n'
-            ]);
-            $isLogado = true;
-            return response()->json(['isLogado'=>$isLogado]);
-        }else{
-            $isLogado = false;
-            return response()->json(['isLogado'=>$isLogado]);
-        }
+        $funcionario_find = $this->funcionarios->findOrFail($request->get('id_funcionario'));
+        $funcionario_find->update([
+            'operando'       =>'n'
+        ]);
+
+        
         
 
     }

@@ -36,7 +36,7 @@
   </thead>
   <tbody>
 
-    <?php $total_fechados = 0;$total_abertos = 0; ?>
+    
   	@foreach($caixas as $key)
     <?php
       $status = "";
@@ -45,11 +45,9 @@
       if($key['fechado'] == 's'){
         $status = "Fechado";
         $cor_fundo = "style='background:#048c80;padding: 6px 15px 8px 15px;color: #fff;border-radius: 5px;'";
-        $total_fechados += $key['fechamento_avista'];
       }else if($key['fechado'] == 'n'){
         $status = "aberto";
         $cor_fundo = "style='background: #e6832f;padding: 6px 15px 8px 15px;color: #fff;border-radius: 5px;'";
-        $total_abertos += $key['fechamento_avista'];
       }
     ?>
 	  	<tr style="background: #fff;">
@@ -72,19 +70,6 @@
 </table>
 
 
-
-<div class="row g-3 form-filtrar-data" method="get" action="">
-
-<div class="col-md-6">
-  <label class="form-label">Total em Caixas Fechados: R$ {{moedaBr($total_fechados)}}</label>
-</div>
-<div class="col-md-6">
-  <label class="form-label">Total em Caixas Abertos: R$ {{moedaBr($total_abertos)}}</label>
-</div>
-
-
-
-</div>
 
 
 @endsection

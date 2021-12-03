@@ -19,7 +19,7 @@
 
     <label for="administrador" class="form-label">Administrador</label>
     <select id="administrador" name="administrador" class="form-select">
-      <option value="s">Sim</option>
+      <!--<option value="s">Sim</option>-->
       <option value="n" selected>Não</option>
     </select>
   </div>

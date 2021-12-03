@@ -82,6 +82,10 @@
 			</li>
 
 			<li class="nav-item">
+				<a href="{{url('vendas')}}" class="nav-link navbar-toggler <?php if($slugs[1] == 'vendas'){echo 'ativado';} ?>"><i class="fas fa-hand-holding-usd"></i> Vendas</a>
+			</li>
+
+			<!--<li class="nav-item">
 			    <a class="nav-link navbar-toggler dropdown-toggle <?php if($slugs[1] == 'caixas' || $slugs[1] == 'vendas'){echo 'ativado';} ?>" aria-current="page" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSubMenu6" aria-controls="navbarSubMenu6" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-hand-holding-usd"></i> Operações Caixa</a>
 			    <div class="submenu-tg">
 				    <div class="navbarSubMenu <?php if($slugs[1] == 'caixas' || $slugs[1] == 'vendas'){echo 'show';}else{echo 'collapse';} ?>" id="navbarSubMenu6">
@@ -95,12 +99,12 @@
 			    <a class="nav-link navbar-toggler dropdown-toggle <?php if($slugs[1] == 'movimentacoes'){echo 'ativado';} ?>" aria-current="page" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSubMenu7" aria-controls="navbarSubMenu7" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-hand-holding-usd"></i> Movimentações</a>
 			    <div class="submenu-tg">
 				    <div class="navbarSubMenu <?php if($slugs[1] == 'movimentacoes'){echo 'show';}else{echo 'collapse';} ?>" id="navbarSubMenu7">
-				    	<!--<a href="{{url('movimentacoes')}}">Listar Movimentações</a>-->
+				    	<a href="{{url('movimentacoes')}}">Listar Movimentações</a>
 				    	<a href="{{url('movimentacoes/create?tipo=e')}}">Reforço</a>
 				    	<a href="{{url('movimentacoes/create?tipo=s')}}">Sangria</a>
 				    </div>
 				</div>
-			</li>
+			</li>-->
 
 			  <li class="nav-item">
 			    <a class="nav-link navbar-toggler dropdown-toggle <?php if($slugs[1] == 'produtos'){echo 'ativado';} ?>" aria-current="page" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSubMenu1" aria-controls="navbarSubMenu1" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-box-open"></i> Produtos</a>
@@ -118,8 +122,8 @@
 				    <div class="navbarSubMenu <?php if($slugs[1] == 'relatorios'){echo 'show';}else{echo 'collapse';} ?>" id="navbarSubMenu2">
 				    	<a href="{{url('relatorios/vendas')}}">Vendas</a>
 				    	<a href="{{url('relatorios/vendasitens')}}">Vendas Itens</a>
-				    	<a href="{{url('relatorios/movimentacoes')}}">Movimentações</a>
-				    	<a href="{{url('relatorios/caixas')}}">Caixas</a>
+				    	<!--<a href="{{url('relatorios/movimentacoes')}}">Movimentações</a>
+				    	<a href="{{url('relatorios/caixas')}}">Caixas</a>-->
 				    </div>
 				</div>
 			  </li>
@@ -140,12 +144,11 @@
 				    <div class="navbarSubMenu <?php if($slugs[1] == 'mesas'){echo 'show';}else{echo 'collapse';} ?>" id="navbarSubMenu8">
 				    	<a href="{{url('mesas')}}">Listar Todas</a>
 				    	<a href="{{url('mesas/create')}}">Cadastrar Nova</a>
-				    	<a href="{{url('qrcode')}}">QR Code</a>
 				    </div>
 				</div>
 			  </li>
 
-			  <li class="nav-item">
+			  <!--<li class="nav-item">
 			    <a class="nav-link navbar-toggler dropdown-toggle <?php if($slugs[1] == 'delivery'){echo 'ativado';} ?>" aria-current="page" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSubMenu9" aria-controls="navbarSubMenu9" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-utensils"></i> Delivery</a>
 			    <div class="submenu-tg">
 				    <div class="navbarSubMenu <?php if($slugs[1] == 'delivery'){echo 'show';}else{echo 'collapse';} ?>" id="navbarSubMenu9">
@@ -153,7 +156,7 @@
 				    	<a href="#">Cadastrar Novo</a>
 				    </div>
 				</div>
-			  </li>
+			  </li>-->
 			  
 			</ul>
 		

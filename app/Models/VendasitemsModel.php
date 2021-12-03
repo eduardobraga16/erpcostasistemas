@@ -11,6 +11,6 @@ class VendasitemsModel extends Model
     public $timestamps = false;
     protected $table='vendas_items';
     protected $fillable= [
-    	'qtde','preco','observacoes','id_venda','id_produto'
+    	'qtde','preco','observacoes','id_venda','id_produto','editar'
     ];
 }
